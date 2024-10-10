@@ -283,29 +283,31 @@ echo "<div class=\"wrap freeworld-html5-map main full\"><h2>" . __('Configuratio
             }
         });
 
-        window.send_to_editorArea = window.send_to_editor;
-
-        window.send_to_editor = function(html) {
-            if(imageFieldId === false) {
-                window.send_to_editorArea(html);
-            }
-            else {
-                var imgurl = jQuery('img',html).prop('src');
-
-                jQuery('#'+imageFieldId).val(imgurl);
-                imageFieldId = false;
-
-                tb_remove();
-            }
-
-        }
         try {
             if (typeof tinyMCE !== 'undefined') tinyMCE.execCommand('mceAddControl', true, 'descr'+this.value);
         } catch (e) {}
 <?php if($sId or $isbulk) { ?>
         jQuery('input[type=submit]').prop('disabled', false);
+
+        jQuery('#image-<?php echo $sId ?>, #bulk_image_url').click(function () {
+            var imgField = $(this);
+            var customUploader = wp.media({
+                library : {
+                    type : 'image'
+                },
+                button: {
+                    text: 'Choose image'
+                },
+                multiple: false
+            });
+            customUploader.on('select', function () {
+                var image = customUploader.state().get('selection').first().toJSON();
+                imgField.val(image.url);
+            })
+            customUploader.open();
+        });
 <?php } ?>
-        states_def = JSON.parse(JSON.stringify(map_cfg.map_data));
+        var states_def = JSON.parse(JSON.stringify(map_cfg.map_data));
         var map = new FlaShopFreeWorldMap(map_cfg);
         map.on('click', function(ev, sid, map) {
 
@@ -517,14 +519,14 @@ echo "<div class=\"wrap freeworld-html5-map main full\"><h2>" . __('Configuratio
         <legend><?php echo __('Map area', 'freeworld-html5-map'); ?></legend>
 
         <div style="" id="stateinfo-<?php echo $vals['id']?>" class="stateinfo">
-        <span class="title"><?php echo __('Name:', 'freeworld-html5-map'); ?> </span><input class="" type="text" name="name[<?php echo $vals['id']?>]" value="<?php echo $vals['name']?>" />
+        <span class="title"><?php echo __('Name:', 'freeworld-html5-map'); ?> </span><input class="" type="text" name="name[<?php echo $vals['id']?>]" value="<?php echo esc_attr($vals['name']) ?>" />
         <span class="tipsy-q" original-title="<?php esc_attr_e('Name of Area', 'freeworld-html5-map'); ?>">[?]</span>
         <label style="padding-left: 20px"><input type="checkbox" name="_hide_name[<?php echo $vals['id']?>]" <?php echo isset($vals['_hide_name']) ? 'checked="checked"' : '' ?>>
         <?php echo __('do not show popup name', 'freeworld-html5-map'); ?>
         </label>
         <div class="clear"></div>
 
-        <span class="title"><?php echo __('Shortname:', 'freeworld-html5-map'); ?> </span><input class="" type="text" name="shortname[<?php echo $vals['id']?>]" value="<?php echo $vals['shortname']?>" />
+        <span class="title"><?php echo __('Shortname:', 'freeworld-html5-map'); ?> </span><input class="" type="text" name="shortname[<?php echo $vals['id']?>]" value="<?php echo esc_attr($vals['shortname']) ?>" />
         <span class="tipsy-q" original-title="<?php esc_attr_e('Shortname of Area. Use \n to break the lines.', 'freeworld-html5-map'); ?>">[?]</span>
         <div class="clear"></div>
 
@@ -533,7 +535,7 @@ echo "<div class=\"wrap freeworld-html5-map main full\"><h2>" . __('Configuratio
         <label><input type="radio" name="URLswitch[<?php echo $vals['id']?>]" id="u<?php echo $vals['id']?>" value="url" <?php echo $rad_url?> autocomplete="off">&nbsp;<?php echo __('Open a URL', 'freeworld-html5-map'); ?></label> <span class="tipsy-q" original-title="<?php esc_attr_e('A click on this area opens a specified URL', 'freeworld-html5-map'); ?>">[?]</span>&nbsp;&nbsp;&nbsp;
         <label><input type="radio" name="URLswitch[<?php echo $vals['id']?>]" id="m<?php echo $vals['id']?>" value="more" <?php echo $rad_more?> autocomplete="off">&nbsp;<?php echo __('Show more info', 'freeworld-html5-map'); ?></label> <span class="tipsy-q" original-title="<?php esc_attr_e('Displays a side-panel with additional information (contacts, addresses etc.)', 'freeworld-html5-map'); ?>">[?]</span>&nbsp;&nbsp;&nbsp;
         <div style="<?php echo $style_input; ?>" id="stateURL<?php echo $vals['id']?>">
-            <span class="title"><?php echo __('URL:', 'freeworld-html5-map'); ?> </span><input style="width: 240px;" class="" type="text" name="URL[<?php echo $vals['id']?>]" id="URL<?php echo $vals['id']?>" value="<?php echo $vals['link']?>" />
+            <span class="title"><?php echo __('URL:', 'freeworld-html5-map'); ?> </span><input style="width: 240px;" class="" type="text" name="URL[<?php echo $vals['id']?>]" id="URL<?php echo $vals['id']?>" value="<?php echo esc_attr($vals['link']) ?>" />
             <span class="tipsy-q" original-title="<?php esc_attr_e('The landing page URL', 'freeworld-html5-map'); ?>">[?]</span>&nbsp;&nbsp;&nbsp;
             <label><input type="checkbox" name="isNewWindow[<?php echo $vals['id']?>]" <?php if (!empty($vals['isNewWindow'])) echo 'checked="checked" '; ?>/> <?php echo __('Open url in a new window', 'freeworld-html5-map'); ?></label></br>
         </div>
@@ -548,22 +550,22 @@ echo "<div class=\"wrap freeworld-html5-map main full\"><h2>" . __('Configuratio
         <span class="title"><?php echo __('Info for tooltip balloon:', 'freeworld-html5-map'); ?> <span class="tipsy-q" original-title="<?php esc_attr_e('Info for tooltip balloon', 'freeworld-html5-map'); ?>">[?]</span> </span>
         <?php freeworld_html5map_plugin_wp_editor_for_tooltip($vals['comment'], "info[{$vals['id']}]", 'info'); ?>
         <br />
-        <span class="title"><?php echo __('Area color:', 'freeworld-html5-map'); ?> </span><input class="color colorSimple" type="text" name="color[<?php echo $vals['id']?>]" value="<?php echo $vals['color_map']?>" style="background-color: #<?php echo $vals['color_map']?>"  />
+        <span class="title"><?php echo __('Area color:', 'freeworld-html5-map'); ?> </span><input class="color colorSimple" type="text" name="color[<?php echo $vals['id']?>]" value="<?php echo esc_attr($vals['color_map']) ?>" style="background-color: #<?php echo $vals['color_map']?>"  />
         <span class="tipsy-q" original-title='<?php esc_attr_e('The color of an area.', 'freeworld-html5-map'); ?>'>[?]</span><div class="fm-colorpicker"></div>
         <label><input name="colorSimpleCh[<?php echo $vals['id']?>]" class="colorSimpleCh" type="checkbox" /> <?php echo __('Apply to all areas', 'freeworld-html5-map'); ?></label>
         <br />
-        <span class="title"><?php echo __('Area hover color:', 'freeworld-html5-map'); ?> </span><input class="color colorOver" type="text" name="color_[<?php echo $vals['id']?>]" value="<?php echo $vals['color_map_over']?>" style="background-color: #<?php echo $vals['color_map_over']?>"  />
+        <span class="title"><?php echo __('Area hover color:', 'freeworld-html5-map'); ?> </span><input class="color colorOver" type="text" name="color_[<?php echo $vals['id']?>]" value="<?php echo esc_attr($vals['color_map_over']) ?>" style="background-color: #<?php echo $vals['color_map_over']?>"  />
         <span class="tipsy-q" original-title='<?php echo __('The color of an area when the mouse cursor is over it.', 'freeworld-html5-map'); ?>'>[?]</span><div class="fm-colorpicker"></div>
         <label><input name="colorOverCh[<?php echo $vals['id']?>]" class="colorOverCh" type="checkbox" /> <?php echo __('Apply to all areas', 'freeworld-html5-map'); ?></label>
         <br />
 
         <span class="title"><?php echo __('Image URL:', 'freeworld-html5-map'); ?> </span>
-            <input onclick="imageFieldId = this.id; tb_show('Image', 'media-upload.php?type=image&tab=library&TB_iframe=true');" class="" type="text" id="image-<?php echo $vals['id']?>" name="image[<?php echo $vals['id']?>]" value="<?php echo $vals['image']?>" />
+            <input class="" type="text" id="image-<?php echo $vals['id']?>" name="image[<?php echo $vals['id']?>]" value="<?php echo esc_attr($vals['image']) ?>" />
             <span style="font-size: 10px; cursor: pointer;" onclick="clearImage(this)"><?php echo __('clear', 'freeworld-html5-map'); ?></span>
         <span class="tipsy-q" original-title="<?php esc_attr_e('The path to file of the image to display in a popup', 'freeworld-html5-map'); ?>">[?]</span><br />
 
         <span class="title"><?php echo __('CSS class:', 'freeworld-html5-map'); ?> </span>
-        <input class="" type="text" id="class-<?php echo $vals['id']?>" name="class[<?php echo $vals['id']?>]" value="<?php echo isset($vals['class']) ? $vals['class'] : '' ?>" />
+        <input class="" type="text" id="class-<?php echo $vals['id']?>" name="class[<?php echo $vals['id']?>]" value="<?php echo isset($vals['class']) ? esc_attr($vals['class']) : '' ?>" />
         <span class="tipsy-q" original-title="<?php esc_attr_e('You can specify several CSS classes separated by space', 'freeworld-html5-map'); ?>">[?]</span>
         <label style="margin-left:20px; cursor: default"><span style="color: #666">ID: <?php echo esc_html('st'.$sId) ?> </span><span class="tipsy-q" original-title="<?php esc_attr_e('Use this ID when interacting with the map via API', 'freeworld-html5-map'); ?>">[?]</span></label>
         <br />
@@ -586,7 +588,7 @@ echo "<div class=\"wrap freeworld-html5-map main full\"><h2>" . __('Configuratio
 </form>
         </div>
         <div class="qanner">
-
+        <a href="https://www.fla-shop.com/products/wp-plugins/world/countries/?utm_source=world-map-plugin&utm_medium=dashboard&utm_campaign=qanner" target="_blank"><img src="<?php echo freeworld_html5map_plugin_get_static_url("html5maps_img.png") . "?r=".time();?>" border="0" width="161" height="601"></a>
         </div>
 
         <div class="clear"></div>

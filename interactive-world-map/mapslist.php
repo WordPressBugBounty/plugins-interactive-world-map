@@ -291,7 +291,7 @@ $listtable->prepare_items();
 
         </div>
         <div class="qanner">
-
+        <a href="https://www.fla-shop.com/products/wp-plugins/world/countries/?utm_source=world-map-plugin&utm_medium=dashboard&utm_campaign=qanner" target="_blank"><img src="<?php echo freeworld_html5map_plugin_get_static_url("html5maps_img.png") . "?r=".time();?>" border="0" width="161" height="601"></a>
         </div>
 
         <div class="clear"></div>

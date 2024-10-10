@@ -113,7 +113,7 @@
 
     <p>
         <span class="title"><?php echo __('Image URL:', 'freeworld-html5-map'); ?> </span>
-        <input onclick="imageFieldId = this.id; tb_show('Image', 'media-upload.php?type=image&tab=library&TB_iframe=true');" class="" id="bulk_image_url" type="text" name="bulk_options[image][image]"  />
+        <input class="" id="bulk_image_url" type="text" name="bulk_options[image][image]"  />
         <span style="font-size: 10px; cursor: pointer;" onclick="clearImage(this)"><?php echo __('clear', 'freeworld-html5-map'); ?></span>
         <span class="tipsy-q" original-title="<?php esc_attr_e('The path to file of the image to display in a popup', 'freeworld-html5-map'); ?>">[?]</span><br />
     </p>

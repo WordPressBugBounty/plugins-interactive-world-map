@@ -5,7 +5,7 @@ Plugin URI: https://fla-shop.com
 Description: Free high-quality map plugin of the World for WordPress. The map depicts continents and features color, font, link and popup customization
 Text Domain: freeworld-html5-map
 Domain Path: /languages
-Version: 3.4.4
+Version: 3.4.8
 Author: Fla-shop.com
 Author URI: https://www.fla-shop.com
 License: GPLv2 or later
@@ -140,7 +140,7 @@ function freeworld_html5map_plugin_view() {
     echo do_shortcode('<div style="width: 99%">[freeworldhtml5map id="'.$map_id.'"]</div>'); ?>
         </div>
         <div class="qanner">
-
+        <a href="https://www.fla-shop.com/products/wp-plugins/world/countries/?utm_source=world-map-plugin&utm_medium=dashboard&utm_campaign=qanner" target="_blank"><img src="<?php echo freeworld_html5map_plugin_get_static_url("html5maps_img.png") . "?r=".time();?>" border="0" width="161" height="601"></a>
         </div>
 
         <div class="clear"></div>
@@ -155,9 +155,9 @@ function freeworld_html5map_plugin_scripts(){
 
         wp_register_style('jquery-tipsy', plugins_url('/static/css/tipsy.css', __FILE__));
         wp_enqueue_style('jquery-tipsy');
-        wp_register_style('freeworld-html5-map-adm', plugins_url('/static/css/mapadm.css', __FILE__), array(), '3.4.4');
+        wp_register_style('freeworld-html5-map-adm', plugins_url('/static/css/mapadm.css', __FILE__), array(), '3.4.8');
         wp_enqueue_style('freeworld-html5-map-adm');
-        wp_register_style('freeworld-html5-map-style', plugins_url('/static/css/map.css', __FILE__), array(), '3.4.4');
+        wp_register_style('freeworld-html5-map-style', plugins_url('/static/css/map.css', __FILE__), array(), '3.4.8');
         wp_enqueue_style('freeworld-html5-map-style');
         wp_enqueue_style('farbtastic');
         wp_enqueue_script('jquery-ui-core');
@@ -168,7 +168,7 @@ function freeworld_html5map_plugin_scripts(){
     }
     else {
 
-        wp_register_style('freeworld-html5-map-style', plugins_url('/static/css/map.css', __FILE__), array(), '3.4.4');
+        wp_register_style('freeworld-html5-map-style', plugins_url('/static/css/map.css', __FILE__), array(), '3.4.8');
         wp_enqueue_style('freeworld-html5-map-style');
 
         wp_register_script('raphael', plugins_url('/static/js/raphael.min.js', __FILE__));
@@ -339,7 +339,7 @@ function freeworld_html5map_plugin_content($atts, $content) {
     }
     if (isset($atts['select'])) {
         $toSelect = array_map('trim', explode(',', $atts['select']));
-        $toSelect = preg_grep('/\S+/', $toSelect);
+        $toSelect = preg_grep('/^[#\w]+$/', $toSelect);
 
         if (count($toSelect) and (preg_match('/^#([\da-f]{3}|[\da-f]{6})/i', $toSelect[count($toSelect)-1]) or !preg_match('/^[a-z]{1,}\d+$/i', $toSelect[count($toSelect)-1])))
             array_unshift($selectColors, array_pop($toSelect));
@@ -364,8 +364,8 @@ function freeworld_html5map_plugin_content($atts, $content) {
 
     $settings_file = freeworld_html5map_plugin_settings_url($map_id, $options);
 
-    wp_register_script('raphaeljs', freeworld_html5map_plugin_get_raphael_js_url(), array(), '3.4.4');
-    wp_register_script('freeworld-html5-map-mapjs_'.$type_id, freeworld_html5map_plugin_get_map_js_url($options), array('raphaeljs'), '3.4.4');
+    wp_register_script('raphaeljs', freeworld_html5map_plugin_get_raphael_js_url(), array(), '3.4.8');
+    wp_register_script('freeworld-html5-map-mapjs_'.$type_id, freeworld_html5map_plugin_get_map_js_url($options), array('raphaeljs'), '3.4.8');
     wp_register_script('freeworld-html5-map-map_cfg_'.$map_id, $settings_file, array('raphaeljs', 'freeworld-html5-map-mapjs_'.$type_id));
     wp_enqueue_script('freeworld-html5-map-map_cfg_'.$map_id);
 
@@ -577,7 +577,7 @@ function freeworld_html5map_plugin_content($atts, $content) {
                     }
 
                     var id = is_group_info ? is_group : (is_point ? sid : map.fetchStateAttr(sid, 'id'));
-                    jQuery('{$addInfoContainerSelector}').html('". __('Loading...', 'germany-html5-map') ."');
+                    jQuery('{$addInfoContainerSelector}').html('". __('Loading...', 'freeworld-html5-map') ."');
                     jQuery.ajax({
                         type: 'POST',
                         url: (is_group_info ? '$groupInfoUrl' : '$stateInfoUrl') + id,

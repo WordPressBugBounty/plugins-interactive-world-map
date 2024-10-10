@@ -3,8 +3,8 @@ Contributors: html5maps
 Donate link: https://www.fla-shop.com/
 Tags: world map, interactive world map, interactive map, svg map, clickable map, interactive maps, vector maps, clickable world map, zoomable world map, world, map, maps
 Requires at least: 3.3
-Tested up to: 6.6
-Stable tag: 3.4.4
+Tested up to: 6.6.2
+Stable tag: 3.4.8
 License: GPLv2 or later
 
 Free plugin for WordPress displays an interactive map of the World. The map features customized colors, links and popup balloons.
@@ -74,6 +74,9 @@ Set the continent's click option to "Show more info" in the Detailed Settings se
 Any type that WordPress can deal with.
 
 == Changelog ==
+
+= 3.4.8 =
+* Fix XSS vulnerability.
 
 = 3.4.4 =
 * Fixes CSRF and XSS vulnerabilities.
