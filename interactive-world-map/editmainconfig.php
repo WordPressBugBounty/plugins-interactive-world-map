@@ -24,7 +24,7 @@ $allow_default_zoom =0;if((isset($_POST['act_type']) && $_POST['act_type'] == 'f
 
     if (isset($_REQUEST['options']['shadowWidth'])) {
         if (preg_match('/(\d+[\.,])?\d+/', $_REQUEST['options']['shadowWidth'])) {
-            $v = str_replace(',','.', $_REQUEST['options']['shadowWidth']);
+            $v = (float)str_replace(',','.', $_REQUEST['options']['shadowWidth']);
             if ($v > 10)
                 $v = 10;
             elseif ($v < 0)
@@ -37,7 +37,7 @@ $allow_default_zoom =0;if((isset($_POST['act_type']) && $_POST['act_type'] == 'f
 
     if (isset($_REQUEST['options']['borderWidth'])) {
         if (preg_match('/(\d+[\.,])?\d+/', $_REQUEST['options']['borderWidth'])) {
-            $v = str_replace(',','.', $_REQUEST['options']['borderWidth']);
+            $v = (float)str_replace(',','.', $_REQUEST['options']['borderWidth']);
             if ($v > 3)
                 $v = 3;
             elseif ($v < 0)
@@ -50,7 +50,7 @@ $allow_default_zoom =0;if((isset($_POST['act_type']) && $_POST['act_type'] == 'f
 
     if (isset($_REQUEST['options']['nameStrokeWidth'])) {
         if (preg_match('/(\d+[\.,])?\d+/', $_REQUEST['options']['nameStrokeWidth'])) {
-            $v = str_replace(',','.', $_REQUEST['options']['nameStrokeWidth']);
+            $v = (float)str_replace(',','.', $_REQUEST['options']['nameStrokeWidth']);
             if ($v > 3)
                 $v = 3;
             elseif ($v < 0)
@@ -63,7 +63,7 @@ $allow_default_zoom =0;if((isset($_POST['act_type']) && $_POST['act_type'] == 'f
 
     if (isset($_REQUEST['options']['nameStrokeOpacity'])) {
         if (preg_match('/(\d+[\.,])?\d+/', $_REQUEST['options']['nameStrokeOpacity'])) {
-            $v = str_replace(',','.', $_REQUEST['options']['nameStrokeOpacity']);
+            $v = (float)str_replace(',','.', $_REQUEST['options']['nameStrokeOpacity']);
             if ($v > 1)
                 $v = 1;
             elseif ($v < 0)
@@ -77,7 +77,18 @@ $allow_default_zoom =0;if((isset($_POST['act_type']) && $_POST['act_type'] == 'f
 
     $clearSlashes = array('nameFontFamily', 'popupCommentFontFamily', 'popupCommentFontFamily');
 
-    foreach($_REQUEST['options'] as $key => $value) if ($key != 'defaultAddInfo' and $key != 'initialZoom') { $_REQUEST['options'][$key] = sanitize_text_field(in_array($key, $clearSlashes) ? stripslashes($value) : $value); }
+    foreach($_REQUEST['options'] as $key => $value) {
+        if ($key != 'defaultAddInfo' and $key != 'initialZoom') {
+            $_REQUEST['options'][$key] = sanitize_text_field(in_array($key, $clearSlashes) ? stripslashes($value) : $value);
+        }
+    }
+
+    $intValues = array('popupNameFontSize', 'listFontSize', 'listWidth', 'pointNameFontSize', 'nameFontSize');
+    foreach ($intValues as $key) {
+        if (isset($_REQUEST['options'][$key])) {
+            $_REQUEST['options'][$key] = intval($_REQUEST['options'][$key]);
+        }
+    }
 
     if ( ! isset($options[$map_id]['defaultAddInfo']))
         $options[$map_id]['defaultAddInfo'] = '';
@@ -215,7 +226,7 @@ echo "<div class=\"wrap freeworld-html5-map main full\"><h2>" . __('HTML5 Map Co
     <fieldset>
         <legend><?php echo __('Map Settings', 'freeworld-html5-map'); ?></legend>
 
-        <span class="title"><?php echo __('Map name:', 'freeworld-html5-map'); ?> </span><input type="text" name="options[name]" value="<?php echo $options[$map_id]['name']; ?>" />
+        <span class="title"><?php echo __('Map name:', 'freeworld-html5-map'); ?> </span><input type="text" name="options[name]" value="<?php esc_attr_e($options[$map_id]['name']); ?>" />
         <span class="tipsy-q" original-title="<?php esc_attr_e('Name of the map', 'freeworld-html5-map'); ?>">[?]</span>
         <div class="clear"></div>
 
@@ -233,7 +244,7 @@ echo "<div class=\"wrap freeworld-html5-map main full\"><h2>" . __('HTML5 Map Co
         <span class="tipsy-q" original-title="<?php esc_attr_e('The height of the map', 'freeworld-html5-map'); ?>">[?]</span>
         <div class="clear"></div>
 
-        <span class="title"><?php echo __('Max width:', 'freeworld-html5-map'); ?> </span><input class="span2" type="text" name="options[maxWidth]" value="<?php echo $options[$map_id]['maxWidth']; ?>" disabled />
+        <span class="title"><?php echo __('Max width:', 'freeworld-html5-map'); ?> </span><input class="span2" type="text" name="options[maxWidth]" value="<?php esc_attr_e($options[$map_id]['maxWidth']); ?>" disabled />
         <span class="tipsy-q" original-title="<?php esc_attr_e('The max width of the map', 'freeworld-html5-map'); ?>">[?]</span>
         <div class="clear" style="height: 10px"></div>
 
@@ -259,11 +270,11 @@ echo "<div class=\"wrap freeworld-html5-map main full\"><h2>" . __('HTML5 Map Co
         </div>
 
         <div style="float: left; width: 50%;">
-        <span class="title"><?php echo __('List width (%):', 'freeworld-html5-map'); ?> </span><input class="span2" type="text" name="options[listWidth]" value="<?php echo $options[$map_id]['listWidth']; ?>" disabled />
+        <span class="title"><?php echo __('List width (%):', 'freeworld-html5-map'); ?> </span><input class="span2" type="text" name="options[listWidth]" value="<?php esc_attr_e($options[$map_id]['listWidth']); ?>" disabled />
         <span class="tipsy-q" original-title="<?php esc_attr_e('The width of the list', 'freeworld-html5-map'); ?>">[?]</span>
         <div class="clear"></div>
 
-        <span class="title"><?php echo __('List font size:', 'freeworld-html5-map'); ?> </span><input class="span2" type="text" name="options[listFontSize]" value="<?php echo $options[$map_id]['listFontSize']; ?>" disabled />
+        <span class="title"><?php echo __('List font size:', 'freeworld-html5-map'); ?> </span><input class="span2" type="text" name="options[listFontSize]" value="<?php esc_attr_e($options[$map_id]['listFontSize']); ?>" disabled />
         <span class="tipsy-q" original-title="<?php esc_attr_e('Font size of the list', 'freeworld-html5-map'); ?>">[?]</span>
         <div class="clear"></div>
         </div>
@@ -298,7 +309,7 @@ echo "<div class=\"wrap freeworld-html5-map main full\"><h2>" . __('HTML5 Map Co
         <div class="clear" style="margin-bottom: 10px"></div>
 
         <label><span class="title" style="width: 250px"><?php echo __('Centered tooltip width:', 'freeworld-html5-map'); ?> </span>
-        <input class="span2" type="text" name="options[tooltipOnMobileWidth]" value="<?php echo $options[$map_id]['tooltipOnMobileWidth']; ?>" style="width: 150px"/></label>
+        <input class="span2" type="text" name="options[tooltipOnMobileWidth]" value="<?php esc_attr_e($options[$map_id]['tooltipOnMobileWidth']); ?>" style="width: 150px"/></label>
         <span class="tipsy-q" original-title="<?php esc_attr_e('Centered tooltip width (only on mobile devices)', 'freeworld-html5-map'); ?>">[?]</span><br />
 <?php if (0) {  // temporary disabled due to pure implementation ?>
         <label><span class="title" style="width: 250px"><?php echo __('Centered tooltip vertical position:', 'freeworld-html5-map'); ?> </span>
@@ -315,18 +326,18 @@ echo "<div class=\"wrap freeworld-html5-map main full\"><h2>" . __('HTML5 Map Co
 
 <hr>
         <div style="float: left; width: 50%;">
-        <span class="title"><?php echo __('Borders color:', 'freeworld-html5-map'); ?> </span><input class="color" type="text" name="options[borderColor]" value="<?php echo $options[$map_id]['borderColor']; ?>" style="background-color: #<?php echo $options[$map_id]['borderColor']; ?>" />
+        <span class="title"><?php echo __('Borders color:', 'freeworld-html5-map'); ?> </span><input class="color" type="text" name="options[borderColor]" value="<?php esc_attr_e($options[$map_id]['borderColor']); ?>" style="background-color: #<?php echo $options[$map_id]['borderColor']; ?>" />
         <span class="tipsy-q" original-title="<?php esc_attr_e('The color of borders on the map', 'freeworld-html5-map'); ?>">[?]</span><div class="fm-colorpicker"></div>
         <div class="clear"></div>
 
-        <span class="title"><?php echo __('Borders width:', 'freeworld-html5-map'); ?> </span><input class="" type="text" name="options[borderWidth]" value="<?php echo $options[$map_id]['borderWidth']; ?>" />
+        <span class="title"><?php echo __('Borders width:', 'freeworld-html5-map'); ?> </span><input class="" type="text" name="options[borderWidth]" value="<?php esc_attr_e($options[$map_id]['borderWidth']); ?>" />
         <span class="tipsy-q" original-title="<?php esc_attr_e('The width of borders on the map', 'freeworld-html5-map'); ?>">[?]</span>
         <div class="clear"></div>
 
         </div>
 
         <div style="float: left; width: 50%;">
-        <span class="title"><?php echo __('Borders hover color:', 'freeworld-html5-map'); ?> </span><input class="color" type="text" name="options[borderColorOver]" value="<?php echo $options[$map_id]['borderColorOver']; ?>" style="background-color: #<?php echo $options[$map_id]['borderColorOver']; ?>" />
+        <span class="title"><?php echo __('Borders hover color:', 'freeworld-html5-map'); ?> </span><input class="color" type="text" name="options[borderColorOver]" value="<?php esc_attr_e($options[$map_id]['borderColorOver']); ?>" style="background-color: #<?php echo $options[$map_id]['borderColorOver']; ?>" />
         <span class="tipsy-q" original-title="<?php esc_attr_e('The color of borders on the map while mouse is over this region', 'freeworld-html5-map'); ?>">[?]</span><div class="fm-colorpicker"></div>
         <div class="clear"></div>
 
@@ -357,12 +368,12 @@ echo "<div class=\"wrap freeworld-html5-map main full\"><h2>" . __('HTML5 Map Co
             <span class="tipsy-q" original-title="<?php esc_attr_e('Automatically scroll to info area on click', 'freeworld-html5-map'); ?>">[?]</span>
         </div>
         <div style="float: left; width: 50%; visibility: hidden" id="autoScrollOffsetBlock">
-            <span class="title"><?php echo __('Offset from top:', 'freeworld-html5-map'); ?> </span><input class="span2" type="text" name="options[autoScrollOffset]" value="<?php echo $options[$map_id]['autoScrollOffset']; ?>" />
+            <span class="title"><?php echo __('Offset from top:', 'freeworld-html5-map'); ?> </span><input class="span2" type="text" name="options[autoScrollOffset]" value="<?php esc_attr_e($options[$map_id]['autoScrollOffset']); ?>" />
             <span class="tipsy-q" original-title="<?php esc_attr_e('Offset in px to prevent fixed headers move on info area', 'freeworld-html5-map'); ?>">[?]</span>
         </div>
         <div class="clear"></div>
         <div style="float: left; width: 50%; display: none" id="customInfoContainerBlock">
-            <span class="title"><?php echo __('CSS selector for container:', 'freeworld-html5-map'); ?> </span><input type="text" name="options[customInfoContainer]" value="<?php echo $options[$map_id]['customInfoContainer']; ?>">
+            <span class="title"><?php echo __('CSS selector for container:', 'freeworld-html5-map'); ?> </span><input type="text" name="options[customInfoContainer]" value="<?php esc_attr_e($options[$map_id]['customInfoContainer']); ?>">
             <span class="tipsy-q" original-title="<?php esc_attr_e('Specify valid CSS selector for container that will be used to display additional information', 'freeworld-html5-map'); ?>">[?]</span>
         </div>
         <div class="clear"></div>
@@ -384,29 +395,29 @@ echo "<div class=\"wrap freeworld-html5-map main full\"><h2>" . __('HTML5 Map Co
             <span class="title"><?php echo __('Font family:', 'freeworld-html5-map'); ?> </span><input class="span2" type="text" name="options[nameFontFamily]" value="<?php echo htmlspecialchars($options[$map_id]['nameFontFamily']); ?>" style="width: 200px" />
             <span class="tipsy-q" original-title="<?php esc_attr_e('Font family of names on the map', 'freeworld-html5-map'); ?>">[?]</span><br />
 
-            <span class="title"><?php echo __('Font size:', 'freeworld-html5-map'); ?> </span><input class="span2" type="text" name="options[nameFontSize]" value="<?php echo $options[$map_id]['nameFontSize']; ?>" />
+            <span class="title"><?php echo __('Font size:', 'freeworld-html5-map'); ?> </span><input class="span2" type="text" name="options[nameFontSize]" value="<?php esc_attr_e($options[$map_id]['nameFontSize']); ?>" />
             <span class="tipsy-q" original-title="<?php esc_attr_e('Font size of names on the map', 'freeworld-html5-map'); ?>">[?]</span><br />
 
-            <span class="title"><?php echo __('Color:', 'freeworld-html5-map'); ?> </span><input id='color' class="color" type="text" name="options[nameColor]" value="<?php echo $options[$map_id]['nameColor']; ?>" style="background-color: #<?php echo $options[$map_id]['nameColor']; ?>" />
+            <span class="title"><?php echo __('Color:', 'freeworld-html5-map'); ?> </span><input id='color' class="color" type="text" name="options[nameColor]" value="<?php esc_attr_e($options[$map_id]['nameColor']); ?>" style="background-color: #<?php echo $options[$map_id]['nameColor']; ?>" />
             <span class="tipsy-q" original-title="<?php esc_attr_e('The color of names on the map', 'freeworld-html5-map'); ?>">[?]</span><div class="fm-colorpicker"></div><br />
 
-            <span class="title"><?php echo __('Color over:', 'freeworld-html5-map'); ?> </span><input id='colorOver' class="color" type="text" name="options[nameColorOver]" value="<?php echo $options[$map_id]['nameColorOver']; ?>" style="background-color: #<?php echo $options[$map_id]['nameColorOver']; ?>" />
+            <span class="title"><?php echo __('Color over:', 'freeworld-html5-map'); ?> </span><input id='colorOver' class="color" type="text" name="options[nameColorOver]" value="<?php esc_attr_e($options[$map_id]['nameColorOver']); ?>" style="background-color: #<?php echo $options[$map_id]['nameColorOver']; ?>" />
             <span class="tipsy-q" original-title="<?php esc_attr_e('The color of names on the map while mouse is over', 'freeworld-html5-map'); ?>">[?]</span><div class="fm-colorpicker"></div><br />
 
             <span class="title"><?php echo __('Name stroke:', 'freeworld-html5-map'); ?> </span><input type="checkbox" name="options[nameStroke]" value="1" <?php echo $options[$map_id]['nameStroke']?'checked':''?> autocomplete="off" />
             <span class="tipsy-q" original-title="<?php esc_attr_e('The stroke on regions names', 'freeworld-html5-map'); ?>">[?]</span><br />
             <div class="clear" style="margin-bottom: 10px"></div>
 
-            <span class="title"><?php echo __('Stroke color:', 'freeworld-html5-map'); ?> </span><input id='scolor' class="color" type="text" name="options[nameStrokeColor]" value="<?php echo $options[$map_id]['nameStrokeColor']; ?>" style="background-color: #<?php echo $options[$map_id]['nameStrokeColor']; ?>" />
+            <span class="title"><?php echo __('Stroke color:', 'freeworld-html5-map'); ?> </span><input id='scolor' class="color" type="text" name="options[nameStrokeColor]" value="<?php esc_attr_e($options[$map_id]['nameStrokeColor']); ?>" style="background-color: #<?php echo $options[$map_id]['nameStrokeColor']; ?>" />
             <span class="tipsy-q" original-title="<?php esc_attr_e('The color of names on the map', 'freeworld-html5-map'); ?>">[?]</span><div class="fm-colorpicker"></div><br />
 
-            <span class="title"><?php echo __('Stroke color over:', 'freeworld-html5-map'); ?> </span><input id='scoloro' class="color" type="text" name="options[nameStrokeColorOver]" value="<?php echo $options[$map_id]['nameStrokeColorOver']; ?>" style="background-color: #<?php echo $options[$map_id]['nameStrokeColorOver']; ?>" />
+            <span class="title"><?php echo __('Stroke color over:', 'freeworld-html5-map'); ?> </span><input id='scoloro' class="color" type="text" name="options[nameStrokeColorOver]" value="<?php esc_attr_e($options[$map_id]['nameStrokeColorOver']); ?>" style="background-color: #<?php echo $options[$map_id]['nameStrokeColorOver']; ?>" />
             <span class="tipsy-q" original-title="<?php esc_attr_e('The color of names on the map while mouse is over', 'freeworld-html5-map'); ?>">[?]</span><div class="fm-colorpicker"></div><br />
 
-            <span class="title"><?php echo __('Stroke width:', 'freeworld-html5-map'); ?> </span><input id='swidth' type="text" name="options[nameStrokeWidth]" value="<?php echo $options[$map_id]['nameStrokeWidth']; ?>" />
+            <span class="title"><?php echo __('Stroke width:', 'freeworld-html5-map'); ?> </span><input id='swidth' type="text" name="options[nameStrokeWidth]" value="<?php esc_attr_e($options[$map_id]['nameStrokeWidth']); ?>" />
             <span class="tipsy-q" original-title="<?php esc_attr_e('Stroke width for names on the map', 'freeworld-html5-map'); ?>">[?]</span><br />
 
-            <span class="title"><?php echo __('Stroke opacity:', 'freeworld-html5-map'); ?> </span><input id='sopacity' type="text" name="options[nameStrokeOpacity]" value="<?php echo $options[$map_id]['nameStrokeOpacity']; ?>" />
+            <span class="title"><?php echo __('Stroke opacity:', 'freeworld-html5-map'); ?> </span><input id='sopacity' type="text" name="options[nameStrokeOpacity]" value="<?php esc_attr_e($options[$map_id]['nameStrokeOpacity']); ?>" />
             <span class="tipsy-q" original-title="<?php esc_attr_e('Stroke opacity for names on the map', 'freeworld-html5-map'); ?>">[?]</span><br />
 
         </div>
@@ -419,10 +430,10 @@ echo "<div class=\"wrap freeworld-html5-map main full\"><h2>" . __('HTML5 Map Co
             <span class="title"><?php echo __('Font family:', 'freeworld-html5-map'); ?> </span><input class="span2" type="text" name="options[popupNameFontFamily]" value="<?php echo htmlspecialchars($options[$map_id]['popupNameFontFamily']); ?>" style="width: 200px" />
             <span class="tipsy-q" original-title="<?php esc_attr_e('Font family of names on the tooltip', 'freeworld-html5-map'); ?>">[?]</span><br />
 
-            <span class="title"><?php echo __('Font size:', 'freeworld-html5-map'); ?> </span><input class="span2" type="text" name="options[popupNameFontSize]" value="<?php echo $options[$map_id]['popupNameFontSize']; ?>" />
+            <span class="title"><?php echo __('Font size:', 'freeworld-html5-map'); ?> </span><input class="span2" type="text" name="options[popupNameFontSize]" value="<?php esc_attr_e($options[$map_id]['popupNameFontSize']); ?>" />
             <span class="tipsy-q" original-title="<?php esc_attr_e('Font size of names on the tooltip', 'freeworld-html5-map'); ?>">[?]</span><br />
 
-            <span class="title"><?php echo __('Color:', 'freeworld-html5-map'); ?> </span><input id='pncolor' class="color" type="text" name="options[popupNameColor]" value="<?php echo $options[$map_id]['popupNameColor']; ?>" style="background-color: #<?php echo $options[$map_id]['popupNameColor']; ?>" />
+            <span class="title"><?php echo __('Color:', 'freeworld-html5-map'); ?> </span><input id='pncolor' class="color" type="text" name="options[popupNameColor]" value="<?php esc_attr_e($options[$map_id]['popupNameColor']); ?>" style="background-color: #<?php echo $options[$map_id]['popupNameColor']; ?>" />
             <span class="tipsy-q" original-title="<?php esc_attr_e('The color of names on the tooltip', 'freeworld-html5-map'); ?>">[?]</span><div class="fm-colorpicker"></div><br />
 
             <h4 class="settings-chapter">
@@ -432,10 +443,10 @@ echo "<div class=\"wrap freeworld-html5-map main full\"><h2>" . __('HTML5 Map Co
             <span class="title"><?php echo __('Font family:', 'freeworld-html5-map'); ?> </span><input class="span2" type="text" name="options[popupCommentFontFamily]" value="<?php echo htmlspecialchars($options[$map_id]['popupCommentFontFamily']); ?>" style="width: 200px" />
             <span class="tipsy-q" original-title="<?php esc_attr_e('Font family of content in the tooltip', 'freeworld-html5-map'); ?>">[?]</span><br />
 
-            <span class="title"><?php echo __('Font size:', 'freeworld-html5-map'); ?> </span><input class="span2" type="text" name="options[popupCommentFontSize]" value="<?php echo $options[$map_id]['popupCommentFontSize']; ?>" />
+            <span class="title"><?php echo __('Font size:', 'freeworld-html5-map'); ?> </span><input class="span2" type="text" name="options[popupCommentFontSize]" value="<?php esc_attr_e($options[$map_id]['popupCommentFontSize']); ?>" />
             <span class="tipsy-q" original-title="<?php esc_attr_e('Font size of content in the tooltip', 'freeworld-html5-map'); ?>">[?]</span><br />
 
-            <span class="title"><?php echo __('Color:', 'freeworld-html5-map'); ?> </span><input id='pccolor' class="color" type="text" name="options[popupCommentColor]" value="<?php echo $options[$map_id]['popupCommentColor'] ? $options[$map_id]['popupCommentColor'] : 'default'; ?>" style="background-color: #<?php echo $options[$map_id]['popupCommentColor']; ?>" />
+            <span class="title"><?php echo __('Color:', 'freeworld-html5-map'); ?> </span><input id='pccolor' class="color" type="text" name="options[popupCommentColor]" value="<?php echo $options[$map_id]['popupCommentColor'] ? esc_attr($options[$map_id]['popupCommentColor']) : 'default'; ?>" style="background-color: #<?php echo $options[$map_id]['popupCommentColor']; ?>" />
             <span class="tipsy-q" original-title="<?php esc_attr_e('The color of content in the tooltip', 'freeworld-html5-map'); ?>">[?]</span><div class="fm-colorpicker"></div><br />
         </div>
 
@@ -514,7 +525,7 @@ $dir = plugins_url('/static/', __FILE__); ?>
 }
 #map-preview .fm-tooltip {
     color: <?php echo $options[$map_id]['popupNameColor']; ?>;
-    font-size: <?php echo $options[$map_id]['popupNameFontSize'].'px'; ?>
+    font-size: <?php echo intval($options[$map_id]['popupNameFontSize']).'px'; ?>
 }
 </style>
 <script type='text/javascript' src='<?php echo freeworld_html5map_plugin_get_raphael_js_url() ?>'></script>
@@ -546,8 +557,8 @@ $map_data = json_encode($map_data);
 
     nameColor       : "<?php echo $options[$map_id]['nameColor']; ?>",
     popupNameColor      : "<?php echo $options[$map_id]['popupNameColor']; ?>",
-    nameFontSize        : "<?php echo $options[$map_id]['nameFontSize'].'px'; ?>",
-    popupNameFontSize   : "<?php echo $options[$map_id]['popupNameFontSize'].'px'; ?>",
+    nameFontSize        : "<?php echo intval($options[$map_id]['nameFontSize']).'px'; ?>",
+    popupNameFontSize   : "<?php echo intval($options[$map_id]['popupNameFontSize']).'px'; ?>",
     nameFontWeight      : "<?php echo $options[$map_id]['nameFontWeight']; ?>",
 
     zoomEnable              : true,
@@ -566,7 +577,7 @@ $map_data = json_encode($map_data);
     pointNameColorOver    : "<?php echo $options[$map_id]['pointNameColorOver']?>",
     pointNameStrokeColor        : "<?php echo $options[$map_id]['pointNameStrokeColor']?>",
     pointNameStrokeColorOver    : "<?php echo $options[$map_id]['pointNameStrokeColorOver']?>",
-    pointNameFontSize    : "<?php echo $options[$map_id]['pointNameFontSize']?>",
+    pointNameFontSize    : "<?php echo intval($options[$map_id]['pointNameFontSize'])?>px",
 
     overDelay       : <?php echo $options[$map_id]['overDelay']; ?>,
     nameStroke      : <?php echo $options[$map_id]['nameStroke']?'true':'false'; ?>,

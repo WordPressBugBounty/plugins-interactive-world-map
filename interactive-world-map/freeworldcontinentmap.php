@@ -5,7 +5,7 @@ Plugin URI: https://fla-shop.com
 Description: Free high-quality map plugin of the World for WordPress. The map depicts continents and features color, font, link and popup customization
 Text Domain: freeworld-html5-map
 Domain Path: /languages
-Version: 3.4.8
+Version: 3.5.1
 Author: Fla-shop.com
 Author URI: https://www.fla-shop.com
 License: GPLv2 or later
@@ -155,9 +155,9 @@ function freeworld_html5map_plugin_scripts(){
 
         wp_register_style('jquery-tipsy', plugins_url('/static/css/tipsy.css', __FILE__));
         wp_enqueue_style('jquery-tipsy');
-        wp_register_style('freeworld-html5-map-adm', plugins_url('/static/css/mapadm.css', __FILE__), array(), '3.4.8');
+        wp_register_style('freeworld-html5-map-adm', plugins_url('/static/css/mapadm.css', __FILE__), array(), '3.5.1');
         wp_enqueue_style('freeworld-html5-map-adm');
-        wp_register_style('freeworld-html5-map-style', plugins_url('/static/css/map.css', __FILE__), array(), '3.4.8');
+        wp_register_style('freeworld-html5-map-style', plugins_url('/static/css/map.css', __FILE__), array(), '3.5.1');
         wp_enqueue_style('freeworld-html5-map-style');
         wp_enqueue_style('farbtastic');
         wp_enqueue_script('jquery-ui-core');
@@ -168,7 +168,7 @@ function freeworld_html5map_plugin_scripts(){
     }
     else {
 
-        wp_register_style('freeworld-html5-map-style', plugins_url('/static/css/map.css', __FILE__), array(), '3.4.8');
+        wp_register_style('freeworld-html5-map-style', plugins_url('/static/css/map.css', __FILE__), array(), '3.5.1');
         wp_enqueue_style('freeworld-html5-map-style');
 
         wp_register_script('raphael', plugins_url('/static/js/raphael.min.js', __FILE__));
@@ -268,7 +268,7 @@ function freeworld_html5map_plugin_prepare_tooltip_css($options, $prefix) {
         $commentCss .= "\t\t\t\tcolor: $options[popupCommentColor];\n";
     }
     if ( ! empty($options['popupCommentFontSize'])) {
-        $commentCss .= "\t\t\t\tfont-size: $options[popupCommentFontSize]px;\n";
+        $commentCss .= "\t\t\t\tfont-size: ".intval($options['popupCommentFontSize'])."px;\n";
     }
     if ( ! empty($options['popupCommentFontFamily'])) {
         $commentCss .= "\t\t\t\tfont-family: ".freeworld_html5map_plugin_escape_fonts($options['popupCommentFontFamily']).";\n";
@@ -279,7 +279,7 @@ function freeworld_html5map_plugin_prepare_tooltip_css($options, $prefix) {
         $popupTitleCss .= "\t\t\t\tcolor: $options[popupNameColor];\n";
     }
     if ( ! empty($options['popupNameFontSize'])) {
-        $popupTitleCss .= "\t\t\t\tfont-size: $options[popupNameFontSize]px;\n";
+        $popupTitleCss .= "\t\t\t\tfont-size: ".intval($options['popupNameFontSize'])."px;\n";
     }
     if ( ! empty($options['popupNameFontFamily'])) {
         $popupTitleCss .= "\t\t\t\tfont-family: ".freeworld_html5map_plugin_escape_fonts($options['popupNameFontFamily']).";\n";
@@ -364,8 +364,8 @@ function freeworld_html5map_plugin_content($atts, $content) {
 
     $settings_file = freeworld_html5map_plugin_settings_url($map_id, $options);
 
-    wp_register_script('raphaeljs', freeworld_html5map_plugin_get_raphael_js_url(), array(), '3.4.8');
-    wp_register_script('freeworld-html5-map-mapjs_'.$type_id, freeworld_html5map_plugin_get_map_js_url($options), array('raphaeljs'), '3.4.8');
+    wp_register_script('raphaeljs', freeworld_html5map_plugin_get_raphael_js_url(), array(), '3.5.1');
+    wp_register_script('freeworld-html5-map-mapjs_'.$type_id, freeworld_html5map_plugin_get_map_js_url($options), array('raphaeljs'), '3.5.1');
     wp_register_script('freeworld-html5-map-map_cfg_'.$map_id, $settings_file, array('raphaeljs', 'freeworld-html5-map-mapjs_'.$type_id));
     wp_enqueue_script('freeworld-html5-map-map_cfg_'.$map_id);
 
@@ -823,7 +823,7 @@ function freeworld_html5map_plugin_print_map_settings($map_id, &$map_options) {
         'nameColor'         => $map_options['nameColor'],
         'nameColorOver'     => $map_options['nameColorOver'],
         'nameFontFamily'    => $map_options['nameFontFamily'],
-        'nameFontSize'      => $map_options['nameFontSize'] . 'px',
+        'nameFontSize'      => intval($map_options['nameFontSize']) . 'px',
         'nameFontWeight'    => $map_options['nameFontWeight'],
 
         'overDelay'         => $map_options['overDelay'],
@@ -1318,7 +1318,7 @@ function freeworld_html5map_plugin_areas_list($options,$count) {
 
     $options['listFontSize'] = intval($options['listFontSize'])>0 ? intval($options['listFontSize']) : 16;
 
-    $html = "<div class=\"freeworldHtml5Map-areas-list\" id=\"freeworld-html5-map-areas-list_{$count}\" style=\"width: ".$options['listWidth']."%;\" data-count=\"$count\">";
+    $html = "<div class=\"freeworldHtml5Map-areas-list\" id=\"freeworld-html5-map-areas-list_{$count}\" style=\"width: ".intval($options['listWidth'])."%;\" data-count=\"$count\">";
 
     foreach ($areas as $area) {
         $html.="<div class=\"freeworldHtml5Map-areas-item\"><a href=\"#\" style=\"font-size: ".$options['listFontSize']."px\" data-key=\"".$area['key']."\" data-id=\"".$area['id']."\" >".$area['name']."</a></div>";
