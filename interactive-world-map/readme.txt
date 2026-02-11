@@ -3,7 +3,7 @@ Contributors: html5maps
 Donate link: https://www.fla-shop.com/
 Tags: world map, interactive world map, interactive map, svg map, clickable map, interactive maps, vector maps, clickable world map, zoomable world map, world, map, maps
 Requires at least: 3.3
-Tested up to: 6.8.1
+Tested up to: 6.9
 Stable tag: 3.5.1
 License: GPLv2 or later
 
